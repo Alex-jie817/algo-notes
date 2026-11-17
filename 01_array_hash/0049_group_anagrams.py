@@ -2,26 +2,44 @@
 0049. 字母异位词分组  Medium
 https://leetcode.cn/problems/group-anagrams/
 
-思路：（自己写，先写中文再写代码。卡住就写「卡在哪一步」）
-
-复杂度：时间 O(?)  空间 O(?)
-
-易错：（写完后补，记录这次踩的坑）
-
-提示：
-  - 把「字符排序后的字符串」当哈希表的键，原词放进对应的桶
-  - 为什么排序后的字符串能代表一组异位词？
-  - 另一种键：26 个字母的计数元组，想想复杂度差在哪
+思路：异位词排序后是同一个字符串，所以「排序后的串」就是天然的哈希键。
+      遍历一遍，把原词塞进对应的桶里。
+复杂度：时间 O(n * k log k)（k 是最长单词长度，瓶颈在排序）
+        空间 O(n * k)（结果本身要存）
+易错：
+  1. 键用 tuple(sorted(s)) 而不是 sorted(s)——list 不可哈希，会直接报错；
+  2. 往字典里塞桶时用 setdefault 或 defaultdict，别写 if/else 判断两次；
+  3. 返回 list(d.values())，直接返回 dict.values() 类型不对。
 """
 from typing import List
+from collections import defaultdict
+
 
 class Solution:
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
-        # TODO: 自己实现
-        pass
+        buckets = defaultdict(list)
+        for s in strs:
+            key = "".join(sorted(s))      # 排序后的串作键
+            buckets[key].append(s)        # 同键进同一个桶
+        return list(buckets.values())
+
+
+# 进阶写法：用 26 个字母的计数元组作键，复杂度降到 O(n * k)，不依赖排序
+class SolutionCounting:
+    def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
+        buckets = defaultdict(list)
+        for s in strs:
+            cnt = [0] * 26
+            for ch in s:
+                cnt[ord(ch) - ord("a")] += 1
+            buckets[tuple(cnt)].append(s)   # tuple 才能当字典键
+        return list(buckets.values())
 
 
 if __name__ == "__main__":
     sol = Solution()
-    # TODO: 至少写 3 组用例，包含边界情况
-    print("先把用例补上再跑")
+    got = sorted(sorted(g) for g in sol.groupAnagrams(["eat", "tea", "tan", "ate", "nat", "bat"]))
+    assert got == [["ate", "eat", "tea"], ["bat"], ["nat", "tan"]], got
+    assert sol.groupAnagrams([""]) == [[""]]
+    assert sol.groupAnagrams(["a"]) == [["a"]]
+    print("ok")

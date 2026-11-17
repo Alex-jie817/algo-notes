@@ -13,19 +13,30 @@ https://leetcode.cn/problems/implement-queue-using-stacks/
   - 只在 out 为空时，才把 in 全部倒进 out，这样每个元素最多被搬两次
   - 想想均摊复杂度为什么是 O(1)
 """
+
+
 class MyQueue:
     def __init__(self):
         self.in_stack = []
         self.out_stack = []
 
-
-class Solution:
     def push(self, x: int) -> None:
+        # TODO: 自己实现
+        pass
+
+    def pop(self) -> int:
+        # TODO: 自己实现
+        pass
+
+    def peek(self) -> int:
+        # TODO: 自己实现
+        pass
+
+    def empty(self) -> bool:
         # TODO: 自己实现
         pass
 
 
 if __name__ == "__main__":
-    sol = Solution()
-    # TODO: 至少写 3 组用例，包含边界情况
+    # TODO: 补至少 3 组用例，含边界情况
     print("先把用例补上再跑")
